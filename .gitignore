@@ -1,0 +1,23 @@
+# Ignore all id.json files at any level
+**/id.json
+
+# Ignore all Turbin3-wallet.json files at any level
+**/Turbin3-wallet.json
+
+# Ignore all dev-wallet.json files at any level
+**/dev-wallet.json
+
+# Ignore any file that ends with wallet.json at any level
+**/*wallet.json
+
+# Ignore all node_modules directories at any level
+**/node_modules/
+
+# Ignore all target directories at any level
+**/target/
+
+# Ignore .DS_Store files at any level (commonly created by macOS)
+**/.DS_Store
+
+# Ignore yarn.lock files at any level
+**/yarn.lock
