@@ -1,3 +1,4 @@
+# Existing rules
 # Ignore all id.json files at any level
 **/id.json
 
@@ -21,3 +22,32 @@
 
 # Ignore yarn.lock files at any level
 **/yarn.lock
+
+# Additional rules for Solana Anchor programs
+# Ignore Anchor-generated files
+**/*.log
+**/anchor-keypair.json
+**/migrations/
+
+# Ignore Rust Cargo lock files in programs
+**/programs/**/Cargo.lock
+
+# Ignore build artifacts
+**/programs/**/target/
+**/tests/**/*.json
+**/*.so
+
+# Ignore IDE and editor settings
+**/.vscode/
+**/.idea/
+**/*.iml
+
+# Logs and temporary files
+**/*.tmp
+**/*.swp
+
+# Environment and sensitive data
+**/.env
+**/.env.local
+**/.env.*.local
+**/.secret.key
