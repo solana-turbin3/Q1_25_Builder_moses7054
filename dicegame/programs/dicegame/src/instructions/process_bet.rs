@@ -62,7 +62,6 @@ impl<'info> ResolveBet<'info> {
             DiceError::Ed25519Pubkey
         );
 
-        // Ensure signatures match
         require!(
             &signature
                 .signature
@@ -71,7 +70,6 @@ impl<'info> ResolveBet<'info> {
             DiceError::Ed25519Signature
         );
 
-        // Ensure messages match
         require!(
             &signature
                 .message
