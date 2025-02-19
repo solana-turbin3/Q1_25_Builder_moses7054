@@ -6,17 +6,12 @@ import {
   LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
-  Transaction,
 } from "@solana/web3.js";
 import { expect } from "chai";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  createAccount,
   createAssociatedTokenAccount,
-  createInitializeMintInstruction,
-  getAssociatedTokenAddress,
-  getMinimumBalanceForRentExemptMint,
-  MINT_SIZE,
+  createMint,
   mintTo,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
@@ -31,9 +26,8 @@ let systemProgram: PublicKey;
 
 let projectAccount: PublicKey;
 let vaultAccount: PublicKey;
-let vaultAta: PublicKey;
 let signerAta: PublicKey;
-let usdcMint: Keypair;
+let usdcMint: PublicKey;
 let tokenProgram: PublicKey = TOKEN_PROGRAM_ID;
 let associatedTokenProgram: PublicKey = ASSOCIATED_TOKEN_PROGRAM_ID;
 
@@ -70,58 +64,60 @@ describe("milestone", () => {
     company = companyPda;
 
     //  second instruction
-    // creating usdc mint
+    // creating usdc mint, signerAta,
     try {
-      const lamports = await getMinimumBalanceForRentExemptMint(
-        provider.connection
+      const mintAuthority = Keypair.generate();
+      // First airdrop some SOL to the mint authority
+      const airdropSig = await provider.connection.requestAirdrop(
+        mintAuthority.publicKey,
+        LAMPORTS_PER_SOL
       );
+      // Wait for airdrop confirmation
+      const latestBlockHash = await provider.connection.getLatestBlockhash();
+      await provider.connection.confirmTransaction({
+        signature: airdropSig,
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+      });
 
-      usdcMint = Keypair.generate();
-
-      const tx1 = new Transaction().add(
-        SystemProgram.createAccount({
-          fromPubkey: signer.publicKey,
-          newAccountPubkey: usdcMint.publicKey,
-          space: MINT_SIZE,
-          lamports,
-          programId: TOKEN_PROGRAM_ID,
-        }),
-        createInitializeMintInstruction(
-          usdcMint.publicKey,
-          6,
-          signer.publicKey,
-          signer.publicKey,
-          TOKEN_PROGRAM_ID
-        )
+      // Verify the balance
+      const balance = await provider.connection.getBalance(
+        mintAuthority.publicKey
       );
+      console.log("Mint authority balance:", balance / LAMPORTS_PER_SOL, "SOL");
 
-      console.log(
-        `Tx Complete: https://explorer.solana.com/tx/${tx1}?cluster=localnet`
+      usdcMint = await createMint(
+        provider.connection,
+        mintAuthority,
+        mintAuthority.publicKey,
+        null,
+        6
       );
-    } catch (error) {
-      console.log(`failed creating usdcMint : ${error}`);
-    }
+      console.log("USDC mint created:", usdcMint.toString());
 
-    // create signerATA
-    try {
+      // Create and fund signer's ATA
       signerAta = await createAssociatedTokenAccount(
         provider.connection,
-        signer.payer,
-        usdcMint.publicKey,
+        mintAuthority,
+        usdcMint,
         signer.publicKey
       );
+      console.log("Signer ATA created:", signerAta.toString());
 
-      const trx = await mintTo(
+      // Mint some tokens to signer's ATA
+      await mintTo(
         provider.connection,
-        signer.payer,
-        usdcMint.publicKey,
+        mintAuthority,
+        usdcMint,
         signerAta,
-        signer.publicKey,
+        mintAuthority,
         100000
       );
-      console.log(`created signerAta : ${trx}`);
+      console.log("Tokens minted to signer's ATA");
     } catch (error) {
-      console.log(`Failed creating signerAta ${error}`);
+      // console.log(`failed creating usdcMint : ${error}`);
+      console.error("Error setting up token accounts:", error);
+      throw error;
     }
 
     // derive project_Account pda
@@ -135,17 +131,6 @@ describe("milestone", () => {
       [Buffer.from("vault"), projectAccount.toBytes()],
       program.programId
     );
-
-    // derive vault ata address only since the program will be creating that account. Not sending
-    // try {
-    //   vaultAta = await getAssociatedTokenAddress(
-    //     usdcMint.publicKey,
-    //     vaultAccount
-    //   );
-    //   console.log("Succefully got vaultAta address");
-    // } catch (error) {
-    //   console.log(`failed getting vaultata address ${error}`);
-    // }
   });
 
   it("Is initialized!", async () => {
@@ -194,7 +179,7 @@ describe("milestone", () => {
         projectAccount,
         vaultAccount,
         signerAta,
-        usdcMint: usdcMint.publicKey,
+        usdcMint: usdcMint,
         tokenProgram,
         associatedTokenProgram,
         systemProgram,

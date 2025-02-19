@@ -13,6 +13,6 @@ pub struct CompanyAccount {
     pub business_reg_num: String, // Business registration number (max 24 chars)
 
     pub company_bump: u8,    // PDA bump seed
-    pub max_projects: u32,   // Max allowed projects
+    // pub max_projects: u32,   // Max allowed projects
     pub total_projects: u32, // Current project count
 }
