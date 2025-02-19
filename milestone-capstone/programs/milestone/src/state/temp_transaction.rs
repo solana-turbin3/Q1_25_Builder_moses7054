@@ -3,8 +3,8 @@ use anchor_lang::prelude::*;
 /// Temporary account for tracking project-related transactions.
 #[account]
 pub struct TempTransactionAccount {
-    pub project_account: Pubkey, // Project's public key (32 bytes)
-    pub ngo: Pubkey,             // NGO's public key (32 bytes)
+    pub project_account_pubkey: Pubkey, // Project's public key (32 bytes)
+    pub ngo_pubkey: Pubkey,             // NGO's public key (32 bytes)
     pub submitted_requirements_hash: [u8; 32], // Hash of submitted requirements (32 bytes)
     pub status: TempTransactionAccountStatus, // Transaction status (1 byte)
     pub temp_bump: u8,

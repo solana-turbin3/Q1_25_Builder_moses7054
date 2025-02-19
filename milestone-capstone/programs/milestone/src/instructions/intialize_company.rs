@@ -23,7 +23,7 @@ impl<'info> InitializeCompany<'info> {
         &mut self,
         name: String,
         business_reg_num: String,
-        max_projects: u32,
+
         bumps: &InitializeCompanyBumps,
     ) -> Result<()> {
         self.company.set_inner(CompanyAccount {
@@ -31,7 +31,6 @@ impl<'info> InitializeCompany<'info> {
             name,
             company_bump: bumps.company,
             business_reg_num,
-            max_projects,
             total_projects: 0,
         });
 

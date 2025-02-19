@@ -133,7 +133,13 @@ describe("milestone", () => {
     );
   });
 
-  it("Is initialized!", async () => {
+  it("intialize admin", async () => {
+    
+  })
+
+
+
+  it("intialize company!", async () => {
     // tx to create company account
     const tx = await program.methods
       .initCompany("Example Company", "123456789", 10)

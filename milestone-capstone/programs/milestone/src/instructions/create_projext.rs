@@ -11,7 +11,7 @@ use anchor_spl::{
 
 use crate::{
     errors::ProjectError,
-    state::{CompanyAccount, ProjectAccount, ProjectStatus, Vault},
+    state::{Admin, CompanyAccount, ProjectAccount, ProjectStatus, Vault},
 };
 
 #[derive(Accounts)]
@@ -61,6 +61,10 @@ pub struct InitializeProject<'info> {
 
     pub usdc_mint: Account<'info, Mint>, // mint of usdc
 
+    #[account( seeds = [b"admin"],
+    bump,)]
+    pub admin: Account<'info, Admin>,
+
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -75,7 +79,7 @@ impl<'info> InitializeProject<'info> {
         bumps: &InitializeProjectBumps,
     ) -> Result<()> {
         require!(
-            self.company.max_projects != self.company.total_projects,
+            self.company.total_projects <= self.admin.max_projects,
             ProjectError::MaxProjectsReached
         );
         self.project_account.set_inner(ProjectAccount {
