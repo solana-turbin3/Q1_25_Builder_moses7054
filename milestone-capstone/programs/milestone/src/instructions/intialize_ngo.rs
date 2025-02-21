@@ -20,6 +20,7 @@ impl<'info> InitializeNgo<'info> {
             completed_projects: 0,
             merkel_root: None,
             ngo_bump: bumps.ngo,
+            ngo_signer: self.signer.key(),
         });
         Ok(())
     }

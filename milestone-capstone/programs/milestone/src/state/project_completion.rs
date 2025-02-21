@@ -2,10 +2,10 @@ use anchor_lang::prelude::*;
 
 #[account]
 pub struct ProjectCompletionDetails {
-    project_pubkey: Pubkey, // Pubkey of project it is linked to.
-    ngo_pubkey: Pubkey,     // Pubkey of ngo account completing it.
-    merkel_root: [u8; 32],  // root of the tree which has leves made up of all the transactions
-    completion_bump: u8,
+    pub project_pubkey: Pubkey, // Pubkey of project it is linked to.
+    pub ngo_pubkey: Pubkey,     // Pubkey of ngo account completing it.
+    pub merkel_root: [u8; 32],  // root of the tree which has leves made up of all the transactions
+    pub completion_bump: u8,
 }
 
 impl Space for ProjectCompletionDetails {

@@ -23,7 +23,6 @@ impl Space for TempTransactionAccount {
 #[derive(AnchorDeserialize, AnchorSerialize, PartialEq, Clone, Debug)]
 pub enum TempTransactionAccountStatus {
     Processing,
-    Seen,
     Accepted,
     Rejected,
 }

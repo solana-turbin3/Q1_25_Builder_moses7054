@@ -15,9 +15,9 @@ pub struct ProjectAccount {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, PartialEq, InitSpace, Copy)]
 pub enum ProjectStatus {
-    Created,            //Project got created
+    //Project got created
     OpenForApplication, // NGOs can apply for funding
-    FundedAndClosed,    // Funding has been granted and closed
+    Funded,             // Funding has been granted and closed
     InProgress,         // Project is actively being worked on
     Closed,             // Project is  closed
 }

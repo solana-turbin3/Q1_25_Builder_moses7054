@@ -62,7 +62,7 @@ pub struct InitializeProject<'info> {
     pub usdc_mint: Account<'info, Mint>, // mint of usdc
 
     #[account( seeds = [b"admin"],
-    bump,)]
+    bump=admin.admin_bump)]
     pub admin: Account<'info, Admin>,
 
     pub token_program: Program<'info, Token>,
@@ -79,14 +79,14 @@ impl<'info> InitializeProject<'info> {
         bumps: &InitializeProjectBumps,
     ) -> Result<()> {
         require!(
-            self.company.total_projects <= self.admin.max_projects,
+            self.company.total_projects < self.admin.max_projects,
             ProjectError::MaxProjectsReached
         );
         self.project_account.set_inner(ProjectAccount {
             company_pubkey: self.company.key(),
             project_name,
             requirements_hash,
-            status: ProjectStatus::Created,
+            status: ProjectStatus::OpenForApplication,
             max_submissions_allowed,
             total_submissions: 0,
             project_bump: bumps.project_account,

@@ -6,11 +6,14 @@ mod errors;
 mod state;
 
 use instructions::*;
+use state::*;
 
 declare_id!("3ekfBBpPEzHCe3Z9DPE9wp7Hgx82LoCGMWS83ez6Ctnj");
 
 #[program]
 pub mod milestone {
+
+    use crate::state::Status;
 
     use super::*;
 
@@ -20,7 +23,7 @@ pub mod milestone {
         fee_basis_points: u16,
     ) -> Result<()> {
         ctx.accounts
-            .intialize_admin(max_projects, fee_basis_points, &ctx.bumps)?;
+            .intialize_admin(max_projects, fee_basis_points, &ctx.bumps)?; //creating admin account
         Ok(())
     }
 
@@ -30,11 +33,11 @@ pub mod milestone {
         business_reg_num: String,
     ) -> Result<()> {
         ctx.accounts
-            .intialize_company(name, business_reg_num, &ctx.bumps)?;
+            .intialize_company(name, business_reg_num, &ctx.bumps)?; // creating company account
 
         Ok(())
     }
-
+    // create project and depostit usdc
     pub fn create_project(
         ctx: Context<InitializeProject>,
         project_name: String,
@@ -54,21 +57,41 @@ pub mod milestone {
         Ok(())
     }
 
+    // initialise ngo account
     pub fn init_ngo(ctx: Context<InitializeNgo>, name: String) -> Result<()> {
         ctx.accounts.initialize_ngo(name, &ctx.bumps)?;
         Ok(())
     }
 
+    // apply for project
     pub fn initiate_project(
         ctx: Context<ApplyProject>,
-        project_account_pubkey: Pubkey,
+        project_name: String,
         submitted_requirements_hash: [u8; 32],
     ) -> Result<()> {
-        ctx.accounts.apply_project(
-            project_account_pubkey,
-            submitted_requirements_hash,
-            &ctx.bumps,
-        )?;
+        ctx.accounts
+            .apply_project(project_name, submitted_requirements_hash, &ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn process_project_funding(
+        ctx: Context<ProcessProject>,
+        status: Status,
+        merkel_root: Option<[u8; 32]>, // merkel root made up of all transactions involved
+    ) -> Result<()> {
+        ctx.accounts
+            .process_project(status, merkel_root, &ctx.bumps)?;
+
+        Ok(())
+    }
+
+    pub fn process_project_payment(
+        ctx: Context<ProcessPayment>,
+        _project_name: String,
+    ) -> Result<()> {
+        ctx.accounts.make_checks()?;
+        ctx.accounts.payment()?;
+
         Ok(())
     }
 }

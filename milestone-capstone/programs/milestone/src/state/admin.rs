@@ -3,10 +3,11 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Admin {
-    pub admin_pubkey: Pubkey,
+    pub admin_signer_pubkey: Pubkey,
     pub max_projects: u32,
     pub fee_basis_points: u16, // basis points 50 = 0.5
-    pub config_bump: u8,
+    pub admin_bump: u8,
+    pub admin_ata: Pubkey,
 }
 
 impl Admin {
