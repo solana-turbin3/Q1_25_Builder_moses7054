@@ -8,6 +8,13 @@ use crate::{errors::ProjectError, state::{
     Admin, NgoAccount, ProjectAccount, ProjectCompletionDetails, ProjectStatus, TempTransactionAccount, TempTransactionAccountStatus, Vault
 }};
 
+#[event]
+pub struct  PaymentEvent{
+    pub project_account_pubkey: Pubkey,
+    pub ngo_account_pubkey: Pubkey,
+    pub payment: String
+}
+
 // send usdc from vaultAta to ngoAta
 // create ngoAta if not there
 // close accounts vaultAta, vaultAccount, TempTransactionAccount
@@ -112,6 +119,8 @@ impl<'info> ProcessPayment<'info> {
 
     pub fn payment(&mut self) ->Result<()>{
 
+        self.project_account.status = ProjectStatus::Closed;
+
         let total_amount = self.vault_ata.amount;
         let fee_amount = self.admin.calculate_fee(total_amount);
         let payment_amount_to_ngo = total_amount - fee_amount;
@@ -169,6 +178,12 @@ impl<'info> ProcessPayment<'info> {
                 signer_seeds
             );
             transfer(cpi_context_to_ngo_payment, payment_amount_to_ngo)?;
+
+            emit!(PaymentEvent {
+                project_account_pubkey: self.project_account.key(),
+                ngo_account_pubkey: self.ngo.key(),
+                payment: "payed".to_string(),
+            })
         }
 
 

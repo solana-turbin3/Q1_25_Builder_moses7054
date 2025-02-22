@@ -23,4 +23,16 @@ pub enum ProjectError {
 
     #[msg("Insufficient balance in vault to cover fee and payment")]
     InsufficientVaultBalance,
+
+    #[msg("Project not closed")]
+    ProjectNotClosed,
+
+    #[msg("This status cannot be used")]
+    ProjectStatusNotAllowed,
+
+    #[msg("The status of project account should be NotOpenForApplication for changing the requirements")]
+    ProjectWrongStatus,
+
+    #[msg("Ngo application already accepted , cannot change reuirements now")]
+    NgoRequirementsNotAllowed,
 }

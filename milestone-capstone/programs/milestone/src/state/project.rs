@@ -1,3 +1,5 @@
+use std::clone;
+
 use anchor_lang::prelude::*;
 
 #[account]
@@ -16,8 +18,9 @@ pub struct ProjectAccount {
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, PartialEq, InitSpace, Copy)]
 pub enum ProjectStatus {
     //Project got created
-    OpenForApplication, // NGOs can apply for funding
-    Funded,             // Funding has been granted and closed
-    InProgress,         // Project is actively being worked on
-    Closed,             // Project is  closed
+    OpenForApplication,    // NGOs can apply for funding
+    Funded,                // Funding has been granted and closed
+    InProgress,            // Project is actively being worked on
+    Closed,                // Project is  closed
+    NotOpenForApplication, //
 }

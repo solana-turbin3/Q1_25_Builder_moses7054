@@ -94,4 +94,32 @@ pub mod milestone {
 
         Ok(())
     }
+
+    pub fn close_temp_account(ctx: Context<CloseAccountTemp>) -> Result<()> {
+        ctx.accounts.close_accounts()?;
+
+        Ok(())
+    }
+
+    pub fn edit_project_account(
+        ctx: Context<EditProject>,
+        status: Option<ProjectStatus>,
+        requirements_hash: Option<[u8; 32]>,
+        close: bool,
+        _project_name: String,
+    ) -> Result<()> {
+        ctx.accounts
+            .edit_project_account(status, requirements_hash, close)?;
+        Ok(())
+    }
+
+    pub fn edit_ngo_reuirements(
+        ctx: Context<EditNgoApplication>,
+        close: bool,
+        submitted_requirements_hash: Option<[u8; 32]>,
+    ) -> Result<()> {
+        ctx.accounts
+            .edit_ngo_reuirements(close, submitted_requirements_hash)?;
+        Ok(())
+    }
 }

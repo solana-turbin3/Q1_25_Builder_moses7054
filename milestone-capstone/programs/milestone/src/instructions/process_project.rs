@@ -5,6 +5,14 @@ use crate::state::{
     TempTransactionAccount, TempTransactionAccountStatus,
 };
 
+
+#[event]
+pub struct  ProcessProjectEvent{
+    pub project_pubkey: Pubkey, // Pubkey of project it is linked to.
+    pub ngo_pubkey: Pubkey,
+    pub status: Status
+} 
+
 // fund manager role
 // after seeing the application of ngo , he either approves or rejects
 // from client side -->  projectName, ngoPubkey Accepted or Rejected
@@ -77,6 +85,12 @@ impl<'info> ProcessProject<'info> {
                 self.temp_transaction_account.status = TempTransactionAccountStatus::Rejected;
             }
         }
+
+        emit!(ProcessProjectEvent {
+            project_pubkey: self.project_account.key(),
+            ngo_pubkey: self.ngo.key(),
+            status: status
+        });
 
         Ok(())
     }

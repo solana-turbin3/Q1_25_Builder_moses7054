@@ -14,6 +14,13 @@ use crate::{
     state::{Admin, CompanyAccount, ProjectAccount, ProjectStatus, Vault},
 };
 
+#[event]
+pub struct ProjectCreationEvent {
+    pub company_pubkey: Pubkey, // Company's public key
+    pub project_name: String,
+    pub requirements_hash: [u8; 32],
+}
+
 #[derive(Accounts)]
 #[instruction(project_name: String )]
 pub struct InitializeProject<'info> {
@@ -84,7 +91,7 @@ impl<'info> InitializeProject<'info> {
         );
         self.project_account.set_inner(ProjectAccount {
             company_pubkey: self.company.key(),
-            project_name,
+            project_name: project_name.clone(),
             requirements_hash,
             status: ProjectStatus::OpenForApplication,
             max_submissions_allowed,
@@ -93,6 +100,12 @@ impl<'info> InitializeProject<'info> {
         });
 
         self.company.total_projects += 1; // updating company account
+
+        emit!(ProjectCreationEvent {
+            company_pubkey: self.company.key(),
+            project_name: project_name,
+            requirements_hash: requirements_hash
+        });
 
         Ok(())
     }

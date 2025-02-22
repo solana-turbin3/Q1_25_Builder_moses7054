@@ -6,6 +6,12 @@ use crate::{
     state::{NgoAccount, ProjectAccount, ProjectStatus, TempTransactionAccount},
 };
 
+#[event]
+pub struct ProjectApplyEvent {
+    pub project_account_pubkey: Pubkey,
+    pub ngo_account_pubkey: Pubkey,
+    pub submitted_requirements_hash: [u8; 32],
+}
 // project created --> event emitted
 // on dashoboard of ngo it appears. applies -->comes here
 // inputs: companyPubkey, projectName
@@ -13,7 +19,6 @@ use crate::{
 // event emitted and updated on companies side
 // companies accepts , rejects, closes project.
 // close related accounts
-
 #[derive(Accounts)]
 #[instruction(project_name: String)]
 pub struct ApplyProject<'info> {
@@ -57,12 +62,19 @@ impl<'info> ApplyProject<'info> {
         self.temp_transaction_account
             .set_inner(TempTransactionAccount {
                 project_account_pubkey: self.project_account.key(),
-                ngo_pubkey: *self.signer.key,
+                ngo_signer_pubkey: self.signer.key(),
+                ngo_account_pubkey: self.ngo.key(),
                 submitted_requirements_hash,
                 status: crate::state::TempTransactionAccountStatus::Processing,
                 temp_bump: bumps.temp_transaction_account,
             });
         self.project_account.total_submissions += 1;
+
+        emit!(ProjectApplyEvent {
+            project_account_pubkey: self.project_account.key(),
+            ngo_account_pubkey: self.signer.key(),
+            submitted_requirements_hash: submitted_requirements_hash
+        });
 
         Ok(())
     }
