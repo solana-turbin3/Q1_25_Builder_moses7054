@@ -42,7 +42,7 @@ pub mod milestone {
         ctx: Context<InitializeProject>,
         project_name: String,
         requirements_hash: [u8; 32],
-        max_submissions_allowed: u32,
+        max_submissions_allowed: u16,
         amount: u64,
     ) -> Result<()> {
         ctx.accounts.verify_and_create_project(

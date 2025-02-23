@@ -5,6 +5,8 @@ use crate::{
     state::{CompanyAccount, ProjectAccount, ProjectStatus},
 };
 
+// TODO test
+
 #[derive(Accounts)]
 #[instruction(project_name: String)]
 pub struct EditProject<'info> {

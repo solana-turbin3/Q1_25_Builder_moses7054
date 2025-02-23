@@ -48,7 +48,7 @@ impl<'info> ApplyProject<'info> {
         bumps: &ApplyProjectBumps,
     ) -> Result<()> {
         require!(
-            self.project_account.total_submissions < self.project_account.total_submissions,
+            self.project_account.total_submissions < self.project_account.max_submissions_allowed,
             ProjectError::MaxApplicationReached
         );
         require!(

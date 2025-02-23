@@ -7,6 +7,9 @@ use crate::{errors::ProjectError, state::{ProjectAccount, ProjectStatus, TempTra
 // check project_account - status is Funded or closed
 // then close temp_transaction_account
 
+// TODO test 
+
+
 #[derive(Accounts)]
 pub struct CloseAccountTemp<'info> {
     #[account(mut)]

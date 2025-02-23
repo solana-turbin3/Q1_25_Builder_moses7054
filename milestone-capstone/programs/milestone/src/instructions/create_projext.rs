@@ -33,7 +33,7 @@ pub struct InitializeProject<'info> {
         seeds = [b"company", signer.key().as_ref()],
         bump = company.company_bump
     )]
-    pub company: Account<'info, CompanyAccount>, // to check company account exist or not
+    pub company: Box<Account<'info, CompanyAccount>>, // to check company account exist or not
 
     #[account(init,
     payer= signer,
@@ -41,7 +41,7 @@ pub struct InitializeProject<'info> {
     space = 8 + ProjectAccount::INIT_SPACE, //using drive space
     bump
     )]
-    pub project_account: Account<'info, ProjectAccount>, // project account
+    pub project_account: Box<Account<'info, ProjectAccount>>, // project account
 
     #[account(init,
         payer = signer,
@@ -49,7 +49,7 @@ pub struct InitializeProject<'info> {
         space =  Vault::INIT_SPACE, // manually getting space so 8 is already considered
         bump
      )]
-    pub vault_account: Account<'info, Vault>, //controls vault ata
+    pub vault_account: Box<Account<'info, Vault>>, //controls vault ata
 
     #[account(
         init,
@@ -57,20 +57,20 @@ pub struct InitializeProject<'info> {
         associated_token::mint = usdc_mint,
         associated_token::authority = vault_account,
     )]
-    pub vault_ata: Account<'info, TokenAccount>, // Stores usdc
+    pub vault_ata: Box<Account<'info, TokenAccount>>, // Stores usdc
 
     #[account(
         mut,
         associated_token::mint = usdc_mint,
         associated_token::authority = signer,
     )]
-    pub signer_ata: Account<'info, TokenAccount>, // signers ata , storying usdc
+    pub signer_ata: Box<Account<'info, TokenAccount>>, // signers ata , storying usdc
 
-    pub usdc_mint: Account<'info, Mint>, // mint of usdc
+    pub usdc_mint: Box<Account<'info, Mint>>, // mint of usdc
 
     #[account( seeds = [b"admin"],
     bump=admin.admin_bump)]
-    pub admin: Account<'info, Admin>,
+    pub admin: Box<Account<'info, Admin>>,
 
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
@@ -82,7 +82,7 @@ impl<'info> InitializeProject<'info> {
         &mut self,
         project_name: String,
         requirements_hash: [u8; 32],
-        max_submissions_allowed: u32,
+        max_submissions_allowed: u16,
         bumps: &InitializeProjectBumps,
     ) -> Result<()> {
         require!(

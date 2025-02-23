@@ -1,5 +1,3 @@
-use std::clone;
-
 use anchor_lang::prelude::*;
 
 #[account]
@@ -10,8 +8,8 @@ pub struct ProjectAccount {
     pub project_name: String,
     pub requirements_hash: [u8; 32],  //Hash storying address to db
     pub status: ProjectStatus,        // Project status
-    pub max_submissions_allowed: u32, // Maximum allowed submissions
-    pub total_submissions: u32,       // Current number of submissions
+    pub max_submissions_allowed: u16, // Maximum allowed submissions
+    pub total_submissions: u16,       // Current number of submissions
     pub project_bump: u8,
 }
 

@@ -2,6 +2,11 @@ use anchor_lang::prelude::*;
 
 use crate::{errors::ProjectError, state::{NgoAccount, TempTransactionAccount, TempTransactionAccountStatus}};
 
+
+
+// TODO test 
+
+
 #[derive(Accounts)]
 pub struct EditNgoApplication<'info> {
     #[account(mut)]
