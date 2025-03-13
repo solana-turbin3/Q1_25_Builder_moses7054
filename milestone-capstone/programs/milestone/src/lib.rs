@@ -17,6 +17,15 @@ pub mod milestone {
 
     use super::*;
 
+    pub fn init_dummy(
+        _ctx: Context<DummyContext>,
+        _project_status: ProjectStatus,
+        _status: Status,
+        _temp_status: TempTransactionAccountStatus,
+    ) -> Result<()> {
+        Ok(())
+    } // to expose project status
+
     pub fn init_admin(
         ctx: Context<InitializeAdmin>,
         max_projects: u32,
@@ -123,3 +132,6 @@ pub mod milestone {
         Ok(())
     }
 }
+
+#[derive(Accounts)]
+pub struct DummyContext {}
