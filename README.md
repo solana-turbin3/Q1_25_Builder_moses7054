@@ -9,6 +9,10 @@ This document provides a comprehensive overview of the Milestone program built o
 
 The Milestone program facilitates funding transactions between companies and NGOs. Companies can create funding projects with specific requirements, NGOs can apply to these projects, and upon approval, funds are disbursed to the NGOs.
 
+## Loom Video Demo
+
+[Watch the video](https://www.loom.com/share/30142eb34dab40fab9d481f1dafc6a9c?sid=9b08cfb5-51a2-4d43-9eb0-b07358bcb484)
+
 ## Program Flow
 
 1. Admin initializes program parameters
@@ -198,3 +202,5 @@ All 21 tests passed successfully, demonstrating the robustness of the program's 
 - Parameter validation
 
 Test execution time: 5.50 seconds
+
+
